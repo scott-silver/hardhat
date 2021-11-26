@@ -220,6 +220,13 @@ describe("Compiler downloader", function () {
       );
     }
 
+    async function saveMalformedCompilersList() {
+      await fsExtra.outputFile(
+        path.join(compilersDir, CompilerPlatform.WASM, "list.json"),
+        "{ malformed"
+      );
+    }
+
     describe("When there's an already downloaded list", function () {
       beforeEach(async function () {
         await saveMockCompilersList();
@@ -284,6 +291,26 @@ describe("Compiler downloader", function () {
 
       describe("getCompilerBuild", function () {
         it("Downloads the compilers list", async function () {
+          await mockDownloader.getCompilerBuild(localCompilerBuild.version);
+          assert.isTrue(downloadCalled);
+        });
+      });
+    });
+
+    describe("When there is but it is malformed", function () {
+      beforeEach(async function () {
+        await saveMalformedCompilersList();
+      });
+
+      describe("getCompilersList", function () {
+        it("Redownloads the compilers list", async function () {
+          await mockDownloader.getCompilersList(CompilerPlatform.WASM);
+          assert.isTrue(downloadCalled);
+        });
+      });
+
+      describe("getCompilerBuild", function () {
+        it("Redownloads the compilers list", async function () {
           await mockDownloader.getCompilerBuild(localCompilerBuild.version);
           assert.isTrue(downloadCalled);
         });
