@@ -2,4 +2,4 @@
 "hardhat": patch
 ---
 
-Fix - allow recovering from partially downloaded compiler list
+Fix a bug that prevented Hardhat from working if the compilers list was partially downloaded
